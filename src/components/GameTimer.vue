@@ -1,93 +1,54 @@
 <template>
 	<div class="content">
-		<!-- <div class="timer">                                                                                  -->
-		<!-- 	<div class="hello" v-on:click="toggleClock" v-bind:style="{ background: user[now_user]['color'] }"> -->
-		<!-- 	<span class="clock">{{ time }}</span>                                                               -->
-		<!-- </div>                                                                                               -->
-		<!-- 	<h1>それぞれの記録</h1>                                                                      -->
-		<!-- 	<div v-on:click="startClock">スタート</div>                                                     -->
-		<!-- 	<div v-on:click="stopClock">ストップ</div>                                                      -->
-		<!-- 	<div v-on:click="resetClock">reset</div>                                                            -->
-		<!-- </div>                                                                                               -->
-				<!-- <img src ="../img/idol.png" id="idol" class="idol"> -->
-		<section class="main-contents">
-    <section class="circle-box">
+				{{this.time}}
+	<div class="timer" style="background:red;">
+	<section class="main-contents">
+		<section class="circle-box">
 			<div v-for="n in 60" v-bind:id="['item'+n]" class='item'>{{n}}</div>
-        <div class="item_center"></div>
-    </section>
-</section>
-  </div>
+			<div class="item_center"v-on:click="toggleClock"></div>
+		</section>
+	</section>
+	</div>
+</div>
 </template>
 
 <script>
 	var default_time = 60;
-export default {
+	export default {
   name: 'GameTimer',
 	//data()の中身は、Viewに返す値
   data () {
     return {
 			time: default_time,
 			clockMethod:null,
-			isDriving:false,
-			//タイマーの機能は上
-			now_user:1,
-			user_number:4,
-			styleObject: {
-				background: '#FF7D7D',
-			},
-			user:{1:{time:0,color:'#FF7D7D'}, 2:{time:0,color:'#FFD580'}, 3:{time:0,color:'#DBDBDB'}, 4:{time:0,color:'#B8B2EA'},},
     }
   },
 	methods:{
 		toggleClock: function(){
-			this.timerFunction();
-		},
-		timerFunction: function(){
-			if(this.isDriving == false){
-				this.isDriving = true;
-			}else{
-				this.userChange();
-				this.resetClock();
-			}
-				this.startClock();
+			this.resetClock();
+			this.startClock();
 		},
 		startClock: function(){
-		//リセットできるように変数化
 			this.clockMethod = setInterval(()=>this.viewTimer(), 1000);
 		},
-		stopClock: function(){
+		resetClock: function(){
 			clearInterval(this.clockMethod);
 			this.clockMethod = null;
-		},
-		resetClock: function(){
-			this.stopClock();
 			this.time = default_time;
 		},
 		viewTimer: function(){
-			const timer = this.time - 1
-			this.time = timer;
-			if(this.time == 0){
-				this.stopClock();
-			}
-		},
-		userChange: function(){
-			const sumTime = default_time - this.time;
-					console.log('number' + this.now_user);
-					console.log(sumTime);
+			const timer = this.time;
+			this.time = timer-1;
 
-					this.user[this.now_user]['time'] += sumTime;
-			if(this.now_user == this.user_number){
-				this.now_user = null;
-			}
-			this.now_user += 1;
+			$('#item'+timer).addClass('appear');
+			$('#item'+(timer+1)).removeClass('appear');
+			if(this.time == 0) this.stopClock();
 		},
 	},
 	computed:{
-		backgroundColor: function(){
-			const userColor = ["#FF7D7D", "#FFD580", "#B3E2B4", "#ABE7FF", "#B8B2EA", "#DBDBDB"];
-			const backgroundColor = userColor[Math.floor(Math.random()*5)]
-			return backgroundColor;
-		}
+	},
+  created:function(){
+			console.log('hoge');
 	},
 }
 
@@ -104,7 +65,7 @@ $(function(){
     var radian = (deg*Math.PI/180.0);
 		var radian = radian * (-1);
 		//半径
-    var rad = 200;
+    var rad = 250;
 		//中央の点の座標
 		var centerX = rad;
 		var centerY = rad;
@@ -118,20 +79,6 @@ $(function(){
 		$('div.item_center').css('top',rad);
 		$('div.item_center').css('margin-left',-50);
 		$('div.item_center').css('margin-top',-150);
-
-	var time = 0;
-	var rotate = function(){
-			var pre_time = time -1;
-			$('#item'+time).toggleClass('appear');
-				$('#item'+pre_time).toggleClass('appear');
-			time++;
-		};
-		var repeat = setInterval(function(){
-				rotate();
-				if(repeat >= 10){
-						clearInterval(repeat);
-					}
-			},1000);
 
 });
 </script>
