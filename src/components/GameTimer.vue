@@ -1,8 +1,20 @@
 <style>
+body{
+	margin :0!important;
+}
+
+.title{
+	font-size : 10vw;
+	color : #666;
+	font-weight: bold;
+	font-family: 'ヒラギノ角ゴ StdN','Hiragino Kaku Gothic StdN','ヒラギノ角ゴシック','Hiragino Sans',sans-serif;
+}
+
+.fukidashi_area{
+}
 #photos {
    /* Prevent vertical gaps */
    line-height: 0;
- 
    -webkit-column-count: 4;
    -webkit-column-gap:   0px;
    -moz-column-count:    4;
@@ -17,14 +29,16 @@
   height: auto !important;
 }
 div.fukidashi{
+	/*visibility:hidden;*/
+	visibility:hidden;
 	display:inline-block;
 	position:relative;
-	--height: 15vw ;
-	width: 20vw;
+	--height: 20vw ;
+	width: 25vw;
 	height: var(--height);
 	line-height:var(--height);
 
-	font-size:5vw;
+	font-size:8vw;
 	color:white;
 	font-family:"Arial Black";
 
@@ -43,18 +57,27 @@ div.fukidashi:after{
   border-color: #FEAE00 transparent transparent transparent;
   border-width: 3vw 20px 0 20px;
 }
+div.fukidashi1{
+	margin-left:2vw;
+	margin-top:5vh;
+}
 div.fukidashi1:after{
   right: 0;
   bottom: 0px;
   left: 10vw;
 	transform: rotate(75deg);
 }
+div.fukidashi2{
+	margin-top:3vh;
+}
 div.fukidashi2:after{
   right: 0;
   bottom: 0px;
   left: 5vw;
 	transform: rotate(95deg);
-	z-index:1;
+}
+div.fukidashi3{
+	margin-top:1vh;
 }
 div.fukidashi3:after{
   right: 0;
@@ -62,27 +85,34 @@ div.fukidashi3:after{
   left: -5vw;
 	transform: rotate(125deg);
 }
+div.fukidashi4{
+	margin-top:7vh;
+	margin-left:0;
+}
 div.fukidashi4:after{
   right: 0;
   bottom: 1vw;
-  left: -10vw;
+  left: -15vw;
 	transform: rotate(175deg);
 }
 </style>
 <template>
 	<div class="content" v-on:click="toggleClock">
 		<div class="none">
-			{{this.time}}
-			{{this.isStart}}
+			<!-- {{this.time}}                    -->
+			<!-- {{this.isStart}}                 -->
+			<!-- <p>{{this.fukidashi.hidden}}</p> -->
+			<!-- <p>{{this.fukidashi.appear}}</p> -->
 			<div class="fukidashi_area" id="photos">
-				<div class="fukidashi fukidashi1" style="margin-top:30px;">50</div>
-				<div class="fukidashi fukidashi2" style="margin-top:80px;">48</div>
-				<div class="fukidashi fukidashi3" style="margin-top:20px;">42</div>
-				<div class="fukidashi fukidashi4" style="margin-top:40px;">37</div>
+				<div class="fukidashi fukidashi1">{{this.time}}</div>
+				<div class="fukidashi fukidashi2">{{this.time}}</div>
+				<div class="fukidashi fukidashi3">{{this.time}}</div>
+				<div class="fukidashi fukidashi4">{{this.time}}</div>
 			</div>
 			<div class="none">
-				<img src="../img/idol.png" class="idol" id="idol">
+				<img src="../img/idol.png" class="idol float" id="idol">
 			</div>
+			<span class="title">RAMMY TIMER</span>
 		</div>
 	</div>
 </template>
@@ -95,7 +125,16 @@ div.fukidashi4:after{
     return {
 			time: default_time,
 			clockMethod:null,
-			isStart: false
+			isStart: false,
+			fukidashi:{
+					appear:null,
+					hidden:[
+							"fukidashi1",
+							"fukidashi2",
+							"fukidashi3",
+							"fukidashi4",
+						],
+				}
     }
   },
 	methods:{
@@ -114,8 +153,26 @@ div.fukidashi4:after{
 		viewTimer: function(){
 			const timer = this.time;
 			this.time = timer-1;
+				const hidden_fukidashi = this.fukidashi.hidden;
+				//新しく表示させるやつを選ぶ。
+				const new_appear_fukidashi = hidden_fukidashi[Math.floor( Math.random() * hidden_fukidashi.length )];
+				var index = hidden_fukidashi.indexOf(new_appear_fukidashi);
+				if (index > -1) hidden_fukidashi.splice(index, 1);
+				console.log(hidden_fukidashi);
+				$('.'+this.fukidashi.appear).toggleClass('appear');
+				//今まで使っていたやつを消す
+				console.log(this.fukidashi.appear)
+				if(!this.fukidashi.appear){
+				$('.'+new_appear_fukidashi).toggleClass('appear');
+				this.fukidashi.appear = new_appear_fukidashi;
+				this.fukidashi.hidden = hidden_fukidashi
+					}else{
+				this.fukidashi.hidden.push(this.fukidashi.appear);
+				this.fukidashi.appear = new_appear_fukidashi;
+				$('.'+new_appear_fukidashi).toggleClass('appear');
+				this.fukidashi.hidden = hidden_fukidashi
+						}
 
-			//$('#idol').css({'transform':''});
 
 			$('#item'+timer).addClass('appear');
 			$('#item'+(timer+1)).removeClass('appear');
@@ -223,7 +280,7 @@ div#item1{
 }
 */
 div.appear{
-	display:block!important;
+	visibility:visible;
 
 }
  
